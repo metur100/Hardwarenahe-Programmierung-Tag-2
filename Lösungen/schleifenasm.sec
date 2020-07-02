@@ -1,0 +1,68 @@
+
+
+;
+; file: schleifen.asm
+;
+; To create executable:
+; Using djgpp:
+; nasm -f coff schleifen.asm
+; gcc -o schleifen schleifen.o driver.c asm_io.o
+;
+; Using Linux and gcc:
+; nasm -f elf schleifen.asm
+; gcc -o schleifen schleifen.o driver.c asm_io.o
+;
+; Using Borland C/C++
+; nasm -f obj schleifen.asm
+; bcc32 schleifen.obj driver.c asm_io.obj
+;
+; Using MS C/C++
+; nasm -f win32 schleifen.asm
+; cl schleifen.obj driver.c asm_io.obj
+;
+; Using Open Watcom
+; nasm -f obj schleifen.asm
+; wcl386 schleifen.obj driver.c asm_io.obj
+
+%include "asm_io.inc"
+;
+segment .data;
+
+wert: dd 0;
+
+segment .bss;
+
+;
+
+
+segment .text
+        global  asm_main
+asm_main:
+        enter   0,0               ; setup routine
+        pusha
+
+        mov ecx , 100;		  ; bis 100 addieren
+loop_start:
+        mov eax , ecx;
+        mov edx ,0;
+        mov ebx , 2;		  ; nur gerade Zahlen
+        div ebx;
+        cmp edx , 0;
+        je add;
+        jmp do_loop;
+add:
+        add [wert],ecx;
+do_loop:
+        loop loop_start;
+
+        mov eax , [wert];
+        call print_int;
+
+        
+
+call print_nl
+       
+        popa
+        mov     eax, 0            ; return back to C
+        leave                     
+        ret

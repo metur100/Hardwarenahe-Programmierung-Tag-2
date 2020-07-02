@@ -1,0 +1,87 @@
+%include "asm_io.inc"
+;
+segment .data;
+print1 db    "Bitte geben Sie die erste Zahl der IP Adresse an ", 0
+print2 db    "Bitte geben Sie die zweite Zahl der IP Adresse an ", 0
+print3 db    "Bitte geben Sie die dritte Zahl der IP Adresse an ", 0
+print4 db    "Bitte geben Sie die vierte Zahl der IP Adresse an ", 0
+print5 db    "Die Netzwerkadresse ist ", 0
+print_punkt db ".",0
+
+segment .bss;
+nwadress resd 1;
+bcadr resd 1;
+;
+
+segment .text
+        global  asm_main
+asm_main:
+        enter   0,0               ; setup routine
+        pusha
+
+        mov eax , print1;
+        call print_string;
+        call read_int;
+        shl eax,24;
+        mov ebx , eax;
+
+
+        mov eax , print2;
+        call print_string;
+        call read_int;
+        shl eax,16;
+        add ebx , eax;
+
+
+        mov eax , print3;
+        call print_string;
+        call read_int;
+        shl eax,8;
+        add ebx , eax;
+
+        mov eax , print4;
+        call print_string;
+        call read_int;
+        add ebx,eax;
+
+        mov eax , 0xFFF00000
+        and eax , ebx
+        mov [nwadress] , eax
+        mov edx , [nwadress]
+  
+        mov eax ,print5
+        call print_string
+        mov eax , [nwadress]
+        and eax , 0xFF000000
+        shr eax, 24  
+        call print_int
+        mov eax , print_punkt
+        call print_string
+
+        mov eax , [nwadress]
+        and eax , 0x00FF0000
+        shr eax, 16  
+        call print_int
+        mov eax , print_punkt
+        call print_string
+
+
+        mov eax , [nwadress]
+        and eax , 0x0000FF00
+        shr eax, 8
+        call print_int
+        mov eax , print_punkt
+        call print_string
+
+        mov eax , [nwadress]
+        and eax , 0x000000FF
+        call print_int 
+        
+                
+
+call print_nl
+       
+        popa
+        mov     eax, 0            ; return back to C
+        leave                     
+        ret

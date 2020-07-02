@@ -1,0 +1,68 @@
+
+
+;
+; file: teilbarkeit.asm
+;
+; To create executable:
+; Using djgpp:
+; nasm -f coff teilbarkeit.asm
+; gcc -o teilbarkeit teilbarkeit.o driver.c asm_io.o
+;
+; Using Linux and gcc:
+; nasm -f elf teilbarkeit.asm
+; gcc -o teilbarkeit teilbarkeit.o driver.c asm_io.o
+;
+; Using Borland C/C++
+; nasm -f obj teilbarkeit.asm
+; bcc32 teilbarkeit.obj driver.c asm_io.obj
+;
+; Using MS C/C++
+; nasm -f win32 teilbarkeit.asm
+; cl teilbarkeit.obj driver.c asm_io.obj
+;
+; Using Open Watcom
+; nasm -f obj teilbarkeit.asm
+; wcl386 teilbarkeit.obj driver.c asm_io.obj
+
+%include "asm_io.inc"
+;
+segment .data;
+prompt1 db    "Gebe eine Zahl ein: ", 0
+prompt2 db    "Die Zahl ist durch 3 teilbar: ", 0
+prompt3 db    "Die Zahl ist durch 3 nicht teilbar ", 0
+
+segment .bss
+;
+
+segment .text
+        global  asm_main
+asm_main:
+        enter   0,0               ; setup routine
+        pusha
+        dump_regs 1
+
+        mov     eax, prompt1      ; print out prompt
+        call    print_string
+
+        call    read_int          ; read integer
+
+        mov ebx ,3;		  ; ist die Zahl durch 3 teilbar?
+        mov edx , 0;
+        div ebx;
+        cmp edx , 0;
+        je ok ;
+        mov eax , prompt3;
+        call print_string;
+        jmp done;  
+          
+ok :
+        mov eax ,prompt2;
+        call print_string;
+       
+done: 
+        call print_nl
+       
+        popa
+        mov     eax, 0            ; return back to C
+        leave                     
+        ret

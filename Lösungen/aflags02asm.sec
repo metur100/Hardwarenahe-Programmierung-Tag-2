@@ -1,0 +1,39 @@
+%include "asm_io.inc"
+segment .data
+
+errorprompt db    "Sprung zum Label error erfolgt!", 0       
+
+segment .text
+        global  asm_main
+asm_main:
+        enter   0,0               ; Setup Routine
+        pusha
+
+a:      mov eax, 10
+        mov ebx, 15;hier ergaenzen
+        cmp eax, ebx
+        js b
+        jmp error
+        
+b:      mov eax, 0x80000000
+        mov ebx, 0xFFFFFFFF;hier ergaenzen
+        add eax, ebx
+        jo c
+        jmp error
+        
+c:      mov eax, 0x2
+        mov ebx, 0x0;hier ergaenzen
+        and eax, ebx
+        jz ende
+        jmp error
+        
+error:  mov eax, errorprompt
+        call print_string
+        call print_nl
+
+ende:   popa
+        mov     eax, 0            ; Zurueck zu C
+        leave
+        ret
+
+

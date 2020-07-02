@@ -1,0 +1,1 @@
+Ist dieses Flag gesetzt, dann trat bei der letzten Rechenoperation ein Übertrag auf, wenn man von vorzeichenlosen Operanden ausgeht. War der letzte ausgeführte Befehl eine Schiebeoperation, so zeigt das Carry-Flag an, welchen Wert das rausgeschobene Bit hatte. 
